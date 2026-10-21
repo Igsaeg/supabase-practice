@@ -1,13 +1,12 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState, createContext } from "react";
+import { BrowserRouter } from "react-router-dom";
+import { useEffect, useState, createContext, useContext } from "react";
 import { supabase } from "../lib/supabase"
 import type { Session } from "@supabase/supabase-js"
+import Routes from "./routes";
 
-import HomePage from "../pages/main"
-import AboutPage from "../pages/test"
-import AuthPage from "../pages/auth"
+const SessionContext = createContext<Session | null>(null);
 
-export const SessionContext = createContext<Session | null>(null);
+export const useSession = () => { return useContext(SessionContext); }
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null)
@@ -31,13 +30,11 @@ export default function App() {
   return (
     <SessionContext.Provider value={session ?? null}>
       <BrowserRouter>
+        {/* Navbar goes here */}
         <main>
-          <Routes>
-            <Route path="/" element={session ? <HomePage /> : <Navigate to="/login" replace />} />
-            <Route path="/signup" element={<AboutPage />} />
-            <Route path="/login" element={session ? <Navigate to="/" replace /> : <AuthPage />} />
-          </Routes>
+          <Routes />
         </main>
+        {/* Footer goes here */}
       </BrowserRouter>
     </SessionContext.Provider>
   );

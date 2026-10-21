@@ -1,1 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
 @import "tailwindcss";
+
+@theme {
+  --color-base: #0F1218;
+  --color-surface: #161A22;
+  --color-elevated: #1C212B;
+  --color-input: #1A1F29;
+  --color-hover: #232936;
+
+  --color-border-subtle: #262C3A;
+  --color-border-default: #333B4D;
+
+  --color-text-primary: #E6EAF2;
+  --color-text-secondary: #A3ACBD;
+  --color-text-muted: #7A8398;
+  --color-text-disabled: #4B5366;
+
+  --color-accent: #8FC8EC;
+  --color-accent-hover: #A7D8F4;
+  --color-accent-pressed: #76B4DB;
+  --color-accent-subtle: rgb(143 200 236 / 0.12);
+  --color-accent-ring: rgb(143 200 236 / 0.28);
+
+  --color-success: #8BD3A8;
+  --color-warning: #E9C46A;
+  --color-danger: #F08A8A;
+
+  --font-heading: "Plus Jakarta Sans";
+  --font-body: "Inter";
+}
+
+@layer components {
+  .input {
+    @apply border-border-default border px-3 py-2 rounded-md bg-input
+  }
+
+  .button {
+    @apply w-full py-2.5 rounded-md bg-accent hover:bg-accent-hover text-base
+  }
+
+  .button_text {
+    @apply hover:underline
+  }
+}
+
+@layer base {
+  body {
+    background-color: theme(--color-base);
+  }
+
+  h1, h2, h3, h4, h5, h6, p, label, button, input {
+    color: theme(--color-text-primary);
+    font-kerning: none;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: theme(--font-heading);
+    letter-spacing: -2%;
+  }
+
+  p, label, button, input {
+    font-family: theme(--font-body);
+  }
+
+  button:hover {
+    cursor: pointer;
+  }
+}

@@ -1,5 +1,4 @@
-import { useContext } from "react"
-import { SessionContext } from "../app/App"
+import { useSession } from "../app/App"
 import { supabase } from "../lib/supabase"
 
 async function logout() {
@@ -8,11 +7,11 @@ async function logout() {
 }
 
 export default function Page() {
-  const session = useContext(SessionContext);
+  const session = useSession();
 
   return (
     <div>
-      <h1>if you are seeing this then you're logged in as {session?.user.email}</h1>
+      <h1>if you are seeing this then you're logged in as {session?.user.user_metadata.display_name}</h1>
       <button type="button" onClick={logout}>logout</button>
     </div>
   )
