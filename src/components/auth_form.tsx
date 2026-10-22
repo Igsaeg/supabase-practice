@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 
@@ -10,6 +11,13 @@ export default function Forms() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const navigate = useNavigate();
+
+  function switchMode() {
+    setIsSigningUp((prev) => !prev)
+    setErrorMessage("");
+    setSuccessMessage("");
+  }
 
   async function submitForm(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -30,7 +38,9 @@ export default function Forms() {
           return;
         }
 
-        if (!data.session) {
+        if (data.session) {
+          navigate("/dashboard", { replace: true });
+        } else {
           setSuccessMessage("Check your email to confirm your account.");
         }
       } else {
@@ -43,6 +53,8 @@ export default function Forms() {
           setErrorMessage(error.message);
           return;
         }
+
+        navigate("/dashboard", { replace: true });
       }
     } catch (err) {
       setErrorMessage("Something went wrong. Please try again.");
@@ -125,7 +137,14 @@ export default function Forms() {
           />
         </div>
 
-        <button className="button mt-4" type="submit" disabled={isSubmitting}>
+        {errorMessage && (<p className="text-danger">{errorMessage}</p>)}
+        {successMessage && (<p className="text-success">{successMessage}</p>)}
+
+        <button
+          className={`w-full ${isSubmitting ? "button_disabled" : "button_accent"} ${errorMessage || successMessage ? "" : "mt-5"}`}
+          type="submit"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? "Please wait..." : isSigningUp ? "Create account" : "Log in"}
         </button>
       </form>
@@ -135,7 +154,7 @@ export default function Forms() {
         <button
           className="button_text"
           type="button"
-          onClick={() => setIsSigningUp((prev) => !prev)}
+          onClick={switchMode}
           aria-controls="user_password"
           aria-pressed={showPassword}
         >

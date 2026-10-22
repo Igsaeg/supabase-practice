@@ -11,9 +11,10 @@ export default function _Routes() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-      <Route path="/auth" element={session ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
-      <Route path="/dashboard" element={session ? <DashboardPage /> : <Navigate to="/auth" replace />} />
+      <Route path="/auth" element={<AuthPage />} />
       <Route path="*" element={<h1>404 Page not found.</h1>} />
+
+      <Route path="/dashboard" element={session ? <DashboardPage /> : <Navigate to="/auth" replace />} />
     </Routes>
   )
 }
