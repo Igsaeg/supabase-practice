@@ -3,7 +3,7 @@ import { useSession } from "../app/App"
 
 import HomePage from "../pages/home"
 import AuthPage from "../pages/auth"
-import DashboardPage from "../pages/dashboard"
+import DeadlinesPage from "../pages/deadlines"
 
 export default function _Routes() {
   const session = useSession();
@@ -14,7 +14,7 @@ export default function _Routes() {
       <Route path="/auth" element={<AuthPage />} />
       <Route path="*" element={<h1>404 Page not found.</h1>} />
 
-      <Route path="/dashboard" element={session ? <DashboardPage /> : <Navigate to="/auth" replace />} />
+      <Route path="/deadlines" element={session ? <DeadlinesPage /> : <Navigate to="/auth" replace />} />
     </Routes>
   )
 }

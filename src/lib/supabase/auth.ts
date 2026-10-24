@@ -1,0 +1,52 @@
+import type { NavigateFunction } from 'react-router-dom';
+import { supabase } from "./supabase_client"
+
+export async function signUp(
+  email: string,
+  password: string,
+  displayName: string,
+  setErrorMessage: (message: string) => void,
+  setSuccessMessage: (message: string) => void,
+  navigate: NavigateFunction
+) {
+  const { data, error } = await supabase.auth.signUp({
+    email: email.trim(),
+    password,
+    options: { data: { display_name: displayName.trim() } },
+  });
+
+  if (error) {
+    setErrorMessage(error.message);
+    return;
+  }
+
+  if (data.session) {
+    navigate("/deadlines", { replace: true });
+  } else {
+    setSuccessMessage("Check your email to confirm your account.");
+  }
+}
+
+export async function logIn(
+  email: string,
+  password: string,
+  setErrorMessage: (message: string) => void,
+  navigate: NavigateFunction
+) {
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.trim(),
+    password,
+  });
+
+  if (error) {
+    setErrorMessage(error.message);
+    return;
+  }
+
+  navigate("/deadlines", { replace: true });
+}
+
+export async function logout() {
+  const { error } = await supabase.auth.signOut()
+  if (error) console.error(error.message)
+}

@@ -3,85 +3,296 @@
 @import "tailwindcss";
 
 @theme {
-  --color-base: #0F1218;
+  /* Backgrounds */
+  --color-canvas: #0F1218;
   --color-surface: #161A22;
   --color-elevated: #1C212B;
   --color-input: #1A1F29;
   --color-hover: #232936;
 
+  /* Borders */
   --color-border-subtle: #262C3A;
   --color-border-default: #333B4D;
 
+  /* Text */
   --color-text-primary: #E6EAF2;
   --color-text-secondary: #A3ACBD;
   --color-text-muted: #7A8398;
   --color-text-disabled: #4B5366;
 
+  /* Accent */
   --color-accent: #8FC8EC;
   --color-accent-hover: #A7D8F4;
   --color-accent-pressed: #76B4DB;
   --color-accent-subtle: rgb(143 200 236 / 0.12);
   --color-accent-ring: rgb(143 200 236 / 0.28);
 
+  /* Status */
   --color-success: #8BD3A8;
   --color-warning: #E9C46A;
   --color-danger: #F08A8A;
 
-  --color-success-surface: rgba(139, 211, 168, 0.12);
-  --color-success-border:  rgba(139, 211, 168, 0.30);
+  --color-success-surface: rgb(139 211 168 / 0.12);
+  --color-success-border: rgb(139 211 168 / 0.30);
+  --color-warning-surface: rgb(233 196 106 / 0.12);
+  --color-warning-border: rgb(233 196 106 / 0.30);
+  --color-danger-surface: rgb(240 138 138 / 0.12);
+  --color-danger-border: rgb(240 138 138 / 0.30);
 
-  --color-warning-surface: rgba(233, 196, 106, 0.12);
-  --color-warning-border:  rgba(233, 196, 106, 0.30);
-
-  --color-danger-surface:  rgba(240, 138, 138, 0.12);
-  --color-danger-border:   rgba(240, 138, 138, 0.30);
-
-  --font-heading: "Plus Jakarta Sans";
-  --font-body: "Inter";
-}
-
-@layer components {
-  .input {
-    @apply border-border-default border px-3 py-2 rounded-lg bg-input
-  }
-
-  .button_accent {
-    @apply w-fit px-8 py-2.5 rounded-lg bg-accent hover:bg-accent-hover text-base
-  }
-
-  .button_disabled {
-    @apply w-fit px-8 py-2.5 rounded-lg bg-accent-subtle text-text-disabled
-  }
-
-  .button_text {
-    @apply hover:underline
-  }
+  /* Fonts */
+  --font-heading: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
 }
 
 @layer base {
-  body {
-    background-color: theme(--color-base);
+  :root {
+    color-scheme: dark;
   }
 
-  h1, h2, h3, h4, h5, h6, p, label, button, input {
-    color: theme(--color-text-primary);
-    font-kerning: none;
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-text-primary);
+  }
+
+  h1, h2, h3, h4, h5, h6, p, label, button, input, textarea, select {
+    color: var(--color-text-primary);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: theme(--font-heading);
-    letter-spacing: -2%;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    text-box: trim-both cap alphabetic;
+    margin-bottom: 0.25rem;
   }
 
-  p, label, button, input {
-    font-family: theme(--font-body);
+  p, label, button, input, textarea, select {
+    font-family: var(--font-body);
+    line-height: 1.4;
   }
 
-  button {
-    font-weight: 500;
-  }
-
-  button:hover {
+  button:hover, a:hover {
     cursor: pointer;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  ::selection {
+    background: var(--color-accent-ring);
+  }
+}
+
+@layer components {
+  /* ── Base ───────────────────────────── */
+  .transition_default {
+    @apply transition-colors duration-150
+  }
+
+  .divider_default {
+    @apply border-t border-border-subtle
+  }
+
+  /* ── Surfaces ───────────────────────── */
+  .surface_default {
+    @apply bg-surface border border-border-subtle rounded-xl
+  }
+
+  .surface_interactive {
+    @apply bg-surface border border-border-subtle rounded-xl cursor-pointer
+            hover:border-border-default transition-colors duration-150
+  }
+
+  .surface_elevated {
+    @apply bg-elevated border border-border-subtle rounded-xl
+  }
+
+  .modal_default {
+    @apply bg-elevated border border-border-default rounded-xl p-6
+  }
+
+  .modal_backdrop {
+    @apply bg-canvas/70 backdrop-blur-sm
+  }
+
+  /* ── Inputs ─────────────────────────── */
+  .input_default {
+    @apply bg-input border border-border-default rounded-lg px-3 py-2
+            focus:outline-none focus:ring-3 focus:ring-accent-ring focus:border-accent-pressed
+  }
+
+  .input_error {
+    @apply bg-input border border-danger rounded-lg px-3 py-2
+            focus:outline-none focus:ring-3 focus:ring-danger-border focus:border-danger
+  }
+
+  .input_disabled {
+    @apply bg-elevated border border-border-subtle rounded-lg px-3 py-2
+          text-text-disabled cursor-not-allowed
+  }
+
+  .textarea_default {
+    @apply bg-input border border-border-default rounded-lg px-3 py-2 min-h-24 resize-y
+            focus:outline-none focus:ring-3 focus:ring-accent-ring focus:border-accent-pressed
+  }
+
+  .select_default {
+    @apply bg-input border border-border-default rounded-lg px-3 py-2
+            focus:outline-none focus:ring-3 focus:ring-accent-ring focus:border-accent-pressed
+  }
+
+  .checkbox_default {
+    @apply size-4 rounded accent-accent cursor-pointer
+  }
+
+  .input_label {
+    @apply text-sm font-medium text-text-secondary
+  }
+
+  .input_hint_error {
+    @apply text-sm text-danger
+  }
+
+  /* ── Buttons ────────────────────────── */
+  .button_accent {
+    @apply inline-flex items-center justify-center gap-2 w-fit px-6 py-2.5 rounded-lg
+            bg-accent text-canvas text-sm font-semibold border border-accent
+            hover:bg-accent-hover hover:border-accent-hover
+            active:bg-accent-pressed active:border-accent-pressed
+            transition-colors duration-150
+            focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent
+  }
+
+  .button_secondary {
+    @apply inline-flex items-center justify-center gap-2 w-fit px-6 py-2.5 rounded-lg
+            bg-accent-subtle text-accent text-sm font-semibold border border-accent/40
+            hover:bg-accent/20 hover:border-accent
+            active:bg-accent/30
+            transition-colors duration-150
+            focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent
+  }
+
+  .button_ghost {
+    @apply inline-flex items-center justify-center gap-2 w-fit px-6 py-2.5 rounded-lg
+            text-text-secondary text-sm font-medium border border-border-default
+            hover:bg-hover hover:text-text-primary hover:border-text-muted
+            active:bg-elevated
+            transition-colors duration-150
+            focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent
+  }
+
+  .button_danger {
+    @apply inline-flex items-center justify-center gap-2 w-fit px-6 py-2.5 rounded-lg
+            bg-danger-surface text-danger text-sm font-semibold border border-danger-border
+            hover:bg-danger/25 hover:border-danger
+            transition-colors duration-150
+            focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger
+  }
+
+  .button_disabled {
+    @apply inline-flex items-center justify-center gap-2 w-fit px-6 py-2.5 rounded-lg
+            bg-elevated text-text-disabled text-sm font-semibold border border-border-subtle
+            cursor-not-allowed
+  }
+
+  .button_text {
+    @apply rounded hover:underline
+            focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent
+  }
+
+  /* ── Badges ─────────────────────────── */
+  .badge_accent {
+    @apply bg-accent-subtle text-accent text-xs px-2.5 py-0.5 rounded-full
+  }
+
+  .badge_success {
+    @apply bg-success-surface text-success text-xs px-2.5 py-0.5 rounded-full
+  }
+
+  .badge_warning {
+    @apply bg-warning-surface text-warning text-xs px-2.5 py-0.5 rounded-full
+  }
+
+  .badge_danger {
+    @apply bg-danger-surface text-danger text-xs px-2.5 py-0.5 rounded-full
+  }
+
+  /* ── Alerts ─────────────────────────── */
+  .alert_info {
+    @apply bg-accent-subtle border border-accent-ring text-accent rounded-xl px-4 py-3
+  }
+
+  .alert_success {
+    @apply bg-success-surface border border-success-border text-success rounded-xl px-4 py-3
+  }
+
+  .alert_warning {
+    @apply bg-warning-surface border border-warning-border text-warning rounded-xl px-4 py-3
+  }
+
+  .alert_danger {
+    @apply bg-danger-surface border border-danger-border text-danger rounded-xl px-4 py-3
+  }
+
+  /* ── Navigation ─────────────────────── */
+  .nav_item {
+    @apply flex items-center gap-2 px-3 py-2 rounded-lg text-text-secondary
+            hover:bg-hover hover:text-text-primary transition-colors duration-150
+  }
+
+  .nav_item_active {
+    @apply flex items-center gap-2 px-3 py-2 rounded-lg bg-accent-subtle text-accent font-medium
+  }
+
+  .tab_item {
+    @apply px-4 py-2 text-text-muted border-b-2 border-transparent
+            hover:text-text-primary transition-colors duration-150
+  }
+
+  .tab_item_active {
+    @apply px-4 py-2 text-accent border-b-2 border-accent font-medium
+  }
+
+  /* ── Overlays ───────────────────────── */
+  .dropdown_menu {
+    @apply bg-elevated border border-border-default rounded-xl p-1.5 min-w-48
+  }
+
+  .dropdown_item {
+    @apply flex items-center gap-2 px-3 py-2 rounded-lg text-text-secondary text-sm cursor-pointer
+            hover:bg-hover hover:text-text-primary transition-colors duration-150
+  }
+
+  .tooltip_default {
+    @apply bg-elevated border border-border-default rounded-lg px-2.5 py-1.5 text-xs text-text-primary
+  }
+
+  /* ── Feedback ───────────────────────── */
+  .progress_track {
+    @apply h-2 w-full rounded-full bg-hover overflow-hidden
+  }
+
+  .progress_bar {
+    @apply h-full rounded-full bg-accent transition-all duration-300
+  }
+
+  .skeleton_default {
+    @apply bg-hover animate-pulse rounded-lg
+  }
+
+  .avatar_default {
+    @apply size-9 rounded-full bg-accent-subtle text-accent text-sm font-medium
+            flex items-center justify-center
+  }
+
+  /* ── Tables ─────────────────────────── */
+  .table_header {
+    @apply px-4 py-3 text-left text-xs font-medium uppercase tracking-wide
+            text-text-muted border-b border-border-subtle
+  }
+
+  .table_row {
+    @apply border-b border-border-subtle hover:bg-hover
   }
 }

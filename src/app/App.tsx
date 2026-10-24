@@ -1,6 +1,6 @@
 import { BrowserRouter } from "react-router-dom";
 import { useEffect, useState, createContext, useContext } from "react";
-import { supabase } from "../lib/supabase"
+import { supabase } from "../lib/supabase/supabase_client"
 import type { Session } from "@supabase/supabase-js"
 import Routes from "./routes";
 
