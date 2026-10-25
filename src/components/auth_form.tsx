@@ -69,18 +69,16 @@ export default function Forms() {
         email,
         password,
         displayName,
-        setErrorMessage,
         setSuccessMessage,
         navigate
       )
       else await logIn(
         email,
         password,
-        setErrorMessage,
         navigate
       )
-    } catch (err) {
-      setErrorMessage("Something went wrong. Please try again.");
+    } catch (error) {
+      setErrorMessage(error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -92,7 +90,7 @@ export default function Forms() {
   return (
     <div className="surface_default px-10 py-12 w-md">
       <div className="text-center mb-8">
-        <h2 className="text-2xl mb-3">
+        <h2 className="text-2xl mb-1.5">
           {isSigningUp ? "Let's get you started" : "Welcome back"}
         </h2>
         <p className="text-text-secondary">

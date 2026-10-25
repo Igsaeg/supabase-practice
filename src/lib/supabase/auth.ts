@@ -5,7 +5,6 @@ export async function signUp(
   email: string,
   password: string,
   displayName: string,
-  setErrorMessage: (message: string) => void,
   setSuccessMessage: (message: string) => void,
   navigate: NavigateFunction
 ) {
@@ -15,10 +14,7 @@ export async function signUp(
     options: { data: { display_name: displayName.trim() } },
   });
 
-  if (error) {
-    setErrorMessage(error.message);
-    return;
-  }
+  if (error) throw new Error(error.message);
 
   if (data.session) {
     navigate("/deadlines", { replace: true });
@@ -30,7 +26,6 @@ export async function signUp(
 export async function logIn(
   email: string,
   password: string,
-  setErrorMessage: (message: string) => void,
   navigate: NavigateFunction
 ) {
   const { error } = await supabase.auth.signInWithPassword({
@@ -38,15 +33,11 @@ export async function logIn(
     password,
   });
 
-  if (error) {
-    setErrorMessage(error.message);
-    return;
-  }
-
+  if (error) throw new Error(error.message);
   navigate("/deadlines", { replace: true });
 }
 
 export async function logout() {
   const { error } = await supabase.auth.signOut()
-  if (error) console.error(error.message)
+  if (error) throw new Error(error.message);
 }

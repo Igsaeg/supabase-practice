@@ -42,6 +42,14 @@
   /* Fonts */
   --font-heading: "Plus Jakarta Sans", system-ui, sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
+
+  /* Animations */
+  --animate-wave: wave 2.6s linear infinite;
+
+  @keyframes wave {
+    0% { transform: translateX(-100%); }
+    50%, 100% { transform: translateX(100%); }
+  }
 }
 
 @layer base {
@@ -61,8 +69,6 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-weight: 600;
-    text-box: trim-both cap alphabetic;
-    margin-bottom: 0.25rem;
   }
 
   p, label, button, input, textarea, select {
@@ -203,19 +209,19 @@
 
   /* ── Badges ─────────────────────────── */
   .badge_accent {
-    @apply bg-accent-subtle text-accent text-xs px-2.5 py-0.5 rounded-full
+    @apply bg-accent-subtle text-accent text-sm px-2.5 py-0.5 rounded-full
   }
 
   .badge_success {
-    @apply bg-success-surface text-success text-xs px-2.5 py-0.5 rounded-full
+    @apply bg-success-surface text-success text-sm px-2.5 py-0.5 rounded-full
   }
 
   .badge_warning {
-    @apply bg-warning-surface text-warning text-xs px-2.5 py-0.5 rounded-full
+    @apply bg-warning-surface text-warning text-sm px-2.5 py-0.5 rounded-full
   }
 
   .badge_danger {
-    @apply bg-danger-surface text-danger text-xs px-2.5 py-0.5 rounded-full
+    @apply bg-danger-surface text-danger text-sm px-2.5 py-0.5 rounded-full
   }
 
   /* ── Alerts ─────────────────────────── */

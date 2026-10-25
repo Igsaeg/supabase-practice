@@ -1,40 +1,49 @@
+// src/app/App.tsx
 import { BrowserRouter } from "react-router-dom";
-import { useEffect, useState, createContext, useContext } from "react";
-import { supabase } from "../lib/supabase/supabase_client"
-import type { Session } from "@supabase/supabase-js"
-import Routes from "./routes";
+import { createContext, useContext, useEffect, useState } from "react";
+import type { Session } from "@supabase/supabase-js";
+import { supabase } from "../lib/supabase/supabase_client";
+import _Routes from "./routes";
 
-const SessionContext = createContext<Session | null>(null);
+const SessionContext = createContext<Session | null | undefined>(undefined);
 
-export const useSession = () => { return useContext(SessionContext); }
+export const useSession = () => useContext(SessionContext);
 
 export default function App() {
-  const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [session, setSession] = useState<Session | null | undefined>(undefined);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setLoading(false)
-    })
+    let active = true;
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
+    const initializeSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        if (active) setSession(session);
+      } catch (error) {
+        console.error(error);
+        if (active) setSession(null);
+      }
+    };
 
-    return () => subscription.unsubscribe()
-  }, [])
+    void initializeSession();
 
-  if (loading) return null
-  
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      if (active) setSession(nextSession);
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
   return (
-    <SessionContext.Provider value={session ?? null}>
+    <SessionContext.Provider value={session}>
       <BrowserRouter>
-        {/* Navbar goes here */}
         <main>
-          <Routes />
+          <_Routes />
         </main>
-        {/* Footer goes here */}
       </BrowserRouter>
     </SessionContext.Provider>
   );

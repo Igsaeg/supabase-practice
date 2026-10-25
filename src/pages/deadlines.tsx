@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { parseDate } from "../lib/parse_timestamptz";
-import { fetchDeadlines, insertDeadline } from "../lib/supabase/deadlines";
+import { fetchDeadlines } from "../lib/supabase/deadlines";
 import { logout } from "../lib/supabase/auth";
 import DeadlineCard from "../components/deadline_card";
+import Skeleton from "../components/skeleton_loader";
 
 type Deadline = {
   id: string;
   title: string;
   description: string;
+  tags: string[],
   due_date: string;
   is_completed: boolean;
 }
@@ -24,8 +26,8 @@ export default function Page() {
       try {
         const data = await fetchDeadlines();
         if (!ignore) setDeadlines(data);
-      } catch {
-        if (!ignore) setErrorMessage("Could not load deadlines. Please try again.");
+      } catch (error) {
+        if (!ignore) setErrorMessage(error.message);
       } finally {
         if (!ignore) setIsLoading(false);
       }
@@ -38,12 +40,12 @@ export default function Page() {
 
   function formatDate(date: string) {
     const { monthName, day, hour, minute } = parseDate(date);
-    return `Due ${monthName} ${day} ${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+    return `Due ${monthName} ${day} (${hour}:${String(minute).padStart(2, "0")})`;
   }
 
   return (
-    <div className="flex justify-center">
-      <div className="w-4xl mt-26">
+    <div className="flex justify-center mx-6">
+      <div className="max-w-5xl mt-24">
         <div className="mb-8">
           <div className="mb-8">
             <h1 className="text-4xl mb-3">Deadlines</h1>
@@ -69,17 +71,28 @@ export default function Page() {
 
         <div className="divider_default mb-6"></div>
 
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 ">
           {isLoading ? (
-            <h2>skeleton loaderrr</h2>
-          ) : (deadlines.map((task) => (
-            <DeadlineCard
-              key={task.id}
-              title={task.title}
-              description={task.description}
-              due_date={formatDate(task.due_date)}
-            />
-          )))}
+            <>
+              <Skeleton variant="rounded" height={176} />
+              <Skeleton variant="rounded" height={176} />
+              <Skeleton variant="rounded" height={176} className="hidden lg:block" />
+            </>
+          ) : errorMessage ? (
+            <p className="text-danger col-span-full">{errorMessage}. Try again later.</p>
+          ) : deadlines.length === 0 ? (
+            <p className="text-text-secondary col-span-full">No deadlines yet.</p>
+          ) : (
+            deadlines.map((task) => (
+              <DeadlineCard
+                key={task.id}
+                title={task.title}
+                description={task.description}
+                tags={task.tags}
+                due_date={formatDate(task.due_date)}
+              />
+            ))
+          )}
         </div>
       </div>
     </div>
