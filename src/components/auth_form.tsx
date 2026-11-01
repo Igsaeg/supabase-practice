@@ -9,10 +9,11 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 6;
 
 export default function Forms() {
-  const [isSigningUp, setIsSigningUp] = useState(true);
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
+  const [isSigningUp, setIsSigningUp] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -37,16 +38,21 @@ export default function Forms() {
       errors.password = "Password is required.";
     } else if (isSigningUp && password.length < MIN_PASSWORD_LENGTH) {
       errors.password = `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`;
-    }
-
+    } else if (isSigningUp && password.length > 50) {
+      errors.password = `Password exceeds 50 characters.`;
+    } 
+    
     return errors;
   }
-
+  
   function clearFieldError(field: FieldName) {
     setFieldErrors((prev) => ({ ...prev, [field]: undefined }));
   }
 
-  function switchMode() {
+  const inputClass = (field: FieldName) =>
+    `${fieldErrors[field] ? "input_error" : "input_default"} transition_default`;
+  
+  function switchMethod() {
     setIsSigningUp((prev) => !prev);
     setFieldErrors({});
     setErrorMessage("");
@@ -84,15 +90,12 @@ export default function Forms() {
     }
   }
 
-  const inputClass = (field: FieldName) =>
-    `${fieldErrors[field] ? "input_error" : "input_default"} transition_default`;
-
   return (
     <div className="surface_default px-10 py-12 w-md">
       <div className="text-center mb-8">
-        <h2 className="text-2xl mb-1.5">
+        <h3 className="text-2xl mb-1.5">
           {isSigningUp ? "Let's get you started" : "Welcome back"}
-        </h2>
+        </h3>
         <p className="text-text-secondary">
           {isSigningUp ? "Takes less than a minute." : "Pick up right where you left off."}
         </p>
@@ -101,17 +104,18 @@ export default function Forms() {
       <form onSubmit={submitForm} noValidate className="flex flex-col gap-3">
         {isSigningUp && (
           <div className="flex flex-col gap-1">
-            <label htmlFor="displayName" className="input_label">Display Name</label>
+            <label htmlFor="display-name" className="input_label">Display Name</label>
             <input
               className={inputClass("displayName")}
-              type="text"
-              id="displayName"
+              id="display-name"
               name="displayName"
+              type="text"
               placeholder="e.g., Alex Morgan"
+              value={displayName}
+              maxLength={50}
               autoComplete="username"
               aria-invalid={!!fieldErrors.displayName}
               aria-describedby={fieldErrors.displayName ? "displayName-error" : undefined}
-              value={displayName}
               onChange={(e) => {
                 setDisplayName(e.target.value);
                 clearFieldError("displayName");
@@ -129,14 +133,14 @@ export default function Forms() {
           <label htmlFor="email" className="input_label">Email Address</label>
           <input
             className={inputClass("email")}
-            type="email"
             id="email"
             name="email"
+            type="email"
             placeholder="you@example.com"
+            value={email}
             autoComplete="email"
             aria-invalid={!!fieldErrors.email}
             aria-describedby={fieldErrors.email ? "email-error" : undefined}
-            value={email}
             onChange={(e) => {
               setEmail(e.target.value);
               clearFieldError("email");
@@ -165,14 +169,14 @@ export default function Forms() {
 
           <input
             className={inputClass("password")}
-            type={showPassword ? "text" : "password"}
             id="password"
             name="password"
+            type={showPassword ? "text" : "password"}
             placeholder={isSigningUp ? "Create a password" : "Enter your password"}
+            value={password}
             autoComplete={isSigningUp ? "new-password" : "current-password"}
             aria-invalid={!!fieldErrors.password}
             aria-describedby={fieldErrors.password ? "password-error" : undefined}
-            value={password}
             onChange={(e) => {
               setPassword(e.target.value);
               clearFieldError("password");
@@ -192,8 +196,7 @@ export default function Forms() {
           className={`transition_default w-full ${isSubmitting ? "button_disabled" : "button_accent"} ${errorMessage || successMessage ? "" : "mt-5"}`}
           type="submit"
           disabled={isSubmitting}
-        >
-          {isSubmitting ? "Please wait..." : isSigningUp ? "Create account" : "Log in"}
+        >{isSubmitting ? "Please wait..." : isSigningUp ? "Create account" : "Log in"}
         </button>
       </form>
 
@@ -202,10 +205,9 @@ export default function Forms() {
         <button
           className="button_text"
           type="button"
-          onClick={switchMode}
           aria-pressed={showPassword}
-        >
-          {isSigningUp ? "Log in" : "Sign up"}
+          onClick={switchMethod}
+        >{isSigningUp ? "Log in" : "Sign up"}
         </button>
       </p>
     </div>

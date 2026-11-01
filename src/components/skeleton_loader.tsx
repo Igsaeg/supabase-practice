@@ -29,14 +29,11 @@ export default function Skeleton({
   const hasChildren = Boolean(children);
 
   const classes = [
-    // base
     "relative block overflow-hidden bg-elevated",
-    // wave: 2x wide, soft falloff
     "after:absolute after:inset-y-0 after:left-0 after:w-[150%] after:animate-wave",
     "after:[transform:translateX(-100%)]",
     "after:bg-[linear-gradient(90deg,transparent_0%,color-mix(in_srgb,var(--color-border-subtle)_40%,transparent)_30%,var(--color-border-subtle)_50%,color-mix(in_srgb,var(--color-border-subtle)_40%,transparent)_70%,transparent_100%)]",
     variantClasses[variant],
-    // infer size from children
     hasChildren && "[&>*]:invisible",
     hasChildren && width === undefined && "max-w-fit",
     hasChildren && height === undefined && "h-auto",
@@ -47,7 +44,6 @@ export default function Skeleton({
 
   return (
     <span className={classes} style={{ width, height, ...style }} {...rest}>
-      {/* nbsp gives empty text skeletons their line height */}
       {!hasChildren && variant === "text" ? "\u00A0" : children}
     </span>
   );

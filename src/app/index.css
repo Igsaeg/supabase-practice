@@ -157,7 +157,7 @@
   }
 
   .input_hint_error {
-    @apply text-sm text-danger
+    @apply text-xs text-danger
   }
 
   /* ── Buttons ────────────────────────── */
